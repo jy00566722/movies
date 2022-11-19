@@ -12,7 +12,7 @@ import (
 func MyCron() {
 	fmt.Println("启动定时任务:....")
 	c := cron.New(cron.WithSeconds())
-	c.AddFunc("0 30 0 * * *", func() {
+	c.AddFunc("0 30 * * * *", func() {
 		fmt.Printf("运行定时任务:%v\n", time.Now())
 		go movice.MoviceCtronGetDate()
 	})
