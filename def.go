@@ -40,7 +40,7 @@ func SetupRouter() *gin.Engine {
 	//}))
 	authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
 		"foo":  "bar", // user:foo password:bar
-		"manu": "123", // user:manu password:123
+		"manu": "123", // user:manu password:124
 	}))
 
 	authorized.POST("admin", func(c *gin.Context) {
