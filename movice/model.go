@@ -3,6 +3,7 @@ package movice
 import (
 	"time"
 
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/qiniu/qmgo/field"
 )
 
@@ -114,4 +115,10 @@ type MoviceReq struct {
 	Ac string `json:"ac"`
 	Pg int    `json:"pg"`
 	H  int    `json:"h"`
+}
+
+type LoadFileinfo struct {
+	FileName string              `json:"fileName"`
+	B2OutPut *s3.PutObjectOutput `json:"b2OutPut"`
+	Size     int64               `json:"size,omitempty"`
 }
