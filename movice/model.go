@@ -11,7 +11,7 @@ import (
 type Movice struct {
 	// field.DefaultField `bson:",inline"`
 	CreateTimeAt     time.Time `bson:"createTimeAt"`
-	UpdateTimeAt     int64     `bson:"updateTimeAt"`
+	UpdateTimeAt     time.Time `bson:"updateTimeAt"`
 	GroupId          int       `json:"group_id" form:"group_id" bson:"group_id"`
 	TypeId           int       `json:"type_id" form:"type_id" bson:"type_id"`
 	TypeId1          int       `json:"type_id_1" form:"type_id_1" bson:"type_id_1"`
@@ -95,6 +95,7 @@ type Movice struct {
 	VodWeekday       string    `json:"vod_weekday" form:"vod_weekday" bson:"vod_weekday"`
 	VodWriter        string    `json:"vod_writer" form:"vod_writer" bson:"vod_writer"`
 	VodYear          string    `json:"vod_year" form:"vod_year" bson:"vod_year"`
+	BzPic            string    `json:"bz_pic,omitempty" form:"bz_pic" bson:"bz_pic,omitempty"`
 }
 
 func (u *Movice) CustomFields() field.CustomFieldsBuilder {

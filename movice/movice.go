@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -45,7 +46,9 @@ func (moviceService *MoviceService) GetMovice(pg string, h string) {
 	} else {
 		b := cli.Bulk()
 		for _, v := range result.List {
+			v.CreateTimeAt = time.Now()
 			b.Upsert(qmgo.M{"vod_id": v.VodId}, v)
+			// b.UpdateOne(qmgo.M{"vod_id": v.VodId}, bson.M{"$set": v})
 		}
 		// fmt.Printf("b: %v\n", b)
 		r, err := b.Run(ctx)

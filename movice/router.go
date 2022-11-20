@@ -2,6 +2,7 @@ package movice
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -37,6 +38,7 @@ func MoviceCtronGetDate() {
 			fmt.Printf("\"当前请求第几页\": %v\n", i)
 			moviceService.GetMovice(strconv.Itoa(i), "")
 		}
+		fmt.Println("====所有请求完成!====")
 
 	}
 }
@@ -44,24 +46,31 @@ func MoviceCtronGetDate() {
 //从数据库中提取图片未保存到BZ的记录，把影视图片搬到BZ长久保存
 func SaveImageFormDbToBz() {
 	var moviesInfo []Movice
-	err := cli.Find(ctx, bson.M{"vod_pic_slide": bson.M{"$eq": ""}}).Limit(3).All(&moviesInfo)
+	//$exists
+	err := cli.Find(ctx, bson.M{"bz_pic": nil}).Sort("_id").Limit(100).All(&moviesInfo)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 	} else {
 		for _, v := range moviesInfo {
-			// fmt.Printf("视频名称: %v,原图片地址:%v,BZ图片地址:%v\n", v.VodName, v.VodPic, v.VodPicSlide)
-			fmt.Printf("视频名称: %v\n", v.VodName)
-			if v.VodPicSlide == "" && v.VodPic != "" {
+			time.Sleep(time.Second)
+			if v.VodPic != "" {
 				loadFileinfo, err := GetImageFromUrl(v.VodPic)
 				if err != nil {
 					fmt.Printf("err: %v\n", err)
+					err := cli.UpdateOne(ctx, bson.M{"vod_id": v.VodId}, bson.M{"$set": bson.M{"bz_pic": "BAD"}})
+					if err != nil {
+						fmt.Printf("插入数据库出错1: %v\n", err)
+					} else {
+						fmt.Printf("插入搬运错误信息BAD进入mongdb: %v\n", v.VodName)
+					}
 				} else {
-					fmt.Printf("上传成功后的信息: %+v\n", loadFileinfo.FileName)
-					err := cli.UpdateOne(ctx, bson.M{"vod_id": v.VodId}, bson.M{"$set": bson.M{"vod_pic_slide": loadFileinfo.FileName}})
+					// fmt.Printf("上传成功后的信息: %+v\n", loadFileinfo.FileName)
+					//https://f004.backblazeb2.com/file/oeoli-movice/20221120/1668878893235997JfcZCw.jpeg
+					err := cli.UpdateOne(ctx, bson.M{"vod_id": v.VodId}, bson.M{"$set": bson.M{"bz_pic": loadFileinfo.FileName}})
 					if err != nil {
 						fmt.Printf("插入数据库出错: %v\n", err)
 					} else {
-						fmt.Printf("\"插入mongodb成功\": %v\n", "")
+						fmt.Printf("\"插入mongodb成功\": %v\n", v.VodName)
 					}
 
 				}
@@ -88,8 +97,18 @@ func GetImageFromUrl(url string) (loadFileinfo LoadFileinfo, err error) {
 	// fmt.Printf("d:图片类型为: %v\n", d)
 	d_s := strings.Split(d, "/")
 	extstring := "." + d_s[1]
-
-	// fmt.Printf("extstring: %v\n", extstring)
+	d_s_1 := strings.ToUpper(d_s[1])
+	testArray := []string{"JPG", "JPEG", "PNG", "GIF"}
+	testFlag := false
+	for _, v := range testArray {
+		if v == d_s_1 {
+			testFlag = !testFlag
+			break
+		}
+	}
+	if !testFlag {
+		return loadFileinfo, errors.New("获取图片的类型不正确:" + d_s[1])
+	}
 	now := time.Now()
 	fileName := now.Format("20060102") + "/" + strconv.FormatInt(now.UnixMicro(), 10) + random.RandString(6) + extstring
 	contentType := "image/" + extstring[1:]

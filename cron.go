@@ -14,7 +14,11 @@ func MyCron() {
 	c := cron.New(cron.WithSeconds())
 	c.AddFunc("0 35 * * * *", func() {
 		fmt.Printf("运行定时任务:%v\n", time.Now())
-		go movice.MoviceCtronGetDate()
+		go movice.MoviceCtronGetDate() //定时获取电影信息
+	})
+	c.AddFunc("0 1,20,49 * * * *", func() {
+		fmt.Printf("运行定时任务:%v\n", time.Now())
+		go movice.SaveImageFormDbToBz() //定时搬运影视图片到BZ
 	})
 	c.Start()
 	fmt.Println("定时任务启动成功!....")
