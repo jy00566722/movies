@@ -74,10 +74,8 @@ func (moviceService *MoviceService) GetMoviceNew(pg string, h string) {
 		models := []mongo.WriteModel{}
 		for _, v := range result.List {
 			v.CreateTimeAt = time.Now()
-			update := bson.D{
-				{"$set", v},
-			}
-			models = append(models, mongo.NewUpdateOneModel().SetFilter(bson.D{{"_id", v.VodId}}).SetUpdate(update).SetUpsert(true))
+			update := bson.M{"$set": v}
+			models = append(models, mongo.NewUpdateOneModel().SetFilter(bson.D{{Key: "_id", Value: v.VodId}}).SetUpdate(update).SetUpsert(true))
 		}
 		opts := options.BulkWrite().SetOrdered(true)
 		results, err := cliM.BulkWrite(context.TODO(), models, opts)

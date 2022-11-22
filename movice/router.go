@@ -32,7 +32,7 @@ func init() {
 
 func GetDataTest() {
 	fmt.Println("测试.")
-	filter := bson.D{{"vod_name", bson.D{{"$all", bson.A{"大使的厨房"}}}}}
+	filter := bson.D{{Key: "vod_name", Value: bson.D{{Key: "$all", Value: bson.A{"大使的厨房"}}}}}
 	cursor, err := cliM.Find(context.TODO(), filter)
 	if err != nil {
 		panic(err)
@@ -140,8 +140,6 @@ func FixImgUrl() {
 				} else {
 					fmt.Printf("newPic修改成功: %v\n", newPic)
 				}
-			} else {
-				// fmt.Printf("正确的VodPic: %v\n", v.VodPic)
 			}
 		}
 		fmt.Printf("\"本轮FixPicUrl结束\": %v\n", "本轮结束")
