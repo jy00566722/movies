@@ -13,6 +13,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/go-resty/resty/v2"
 	"github.com/qiniu/qmgo"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //获取电影数据
@@ -25,9 +28,7 @@ var cli *qmgo.QmgoClient
 
 func init() {
 	cli, _ = qmgo.Open(ctx, &qmgo.Config{Uri: "mongodb://t.deey.top:57890", Database: "movicego", Coll: "movice"})
-	// if err != nil {
-	// 	fmt.Printf("err: %v\n", err)
-	// }
+
 }
 
 //https://api.apibdzy.com/api.php/provide/vod/?ac=detail&pg=2&h=40
@@ -47,10 +48,8 @@ func (moviceService *MoviceService) GetMovice(pg string, h string) {
 		b := cli.Bulk()
 		for _, v := range result.List {
 			v.CreateTimeAt = time.Now()
-			b.Upsert(qmgo.M{"vod_id": v.VodId}, v)
-			// b.UpdateOne(qmgo.M{"vod_id": v.VodId}, bson.M{"$set": v})
+			b.UpsertOne(qmgo.M{"vod_id": v.VodId}, qmgo.M{"$set": v})
 		}
-		// fmt.Printf("b: %v\n", b)
 		r, err := b.Run(ctx)
 		if err != nil {
 			fmt.Printf("插入mongodb出错: %v\n", err)
@@ -58,7 +57,36 @@ func (moviceService *MoviceService) GetMovice(pg string, h string) {
 			fmt.Printf("\"捶入mongodb成功\": %+v\n", r)
 		}
 	}
+}
 
+//使用原生go-mongodb操作
+func (moviceService *MoviceService) GetMoviceNew(pg string, h string) {
+	var moviceReq = make(map[string]string)
+	moviceReq["ac"] = "detail"
+	moviceReq["pg"] = pg
+	moviceReq["h"] = h
+	result := &MoviceResp{}
+	_, err := client.R().SetQueryParams(moviceReq).SetResult(result).ForceContentType("application/json").Get(url)
+	if err != nil {
+		fmt.Printf("\"请求出现错误\": %v\n", "请求出现错误")
+		fmt.Printf("err: %v\n", err)
+	} else {
+		models := []mongo.WriteModel{}
+		for _, v := range result.List {
+			v.CreateTimeAt = time.Now()
+			update := bson.D{
+				{"$set", v},
+			}
+			models = append(models, mongo.NewUpdateOneModel().SetFilter(bson.D{{"_id", v.VodId}}).SetUpdate(update).SetUpsert(true))
+		}
+		opts := options.BulkWrite().SetOrdered(true)
+		results, err := cliM.BulkWrite(context.TODO(), models, opts)
+		if err != nil {
+			fmt.Printf("插入mongodb出错: %v\n", err)
+		} else {
+			fmt.Printf("\"捶入mongodb成功\": %+v\n", results)
+		}
+	}
 }
 
 //从url获取图片
