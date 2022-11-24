@@ -80,7 +80,7 @@ func MoviceCtronGetDate() {
 //从数据库中提取图片未保存到BZ的记录，把影视图片搬到BZ长久保存
 func SaveImageFormDbToBz() {
 	var moviesInfo []Movice
-	err := cli.Find(ctx, bson.M{"bz_pic": nil}).Sort("-_id").Limit(30).All(&moviesInfo)
+	err := cli.Find(ctx, bson.M{"bz_pic": nil}).Sort("-_id").Limit(1000).All(&moviesInfo)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 	} else {

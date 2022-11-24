@@ -3,6 +3,7 @@ package movice
 // Import resty into your code and refer it as `resty`.
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -90,6 +91,19 @@ func (moviceService *MoviceService) GetMoviceNew(pg string, h string) {
 //从url获取图片
 func (moviceService *MoviceService) GetImageFromUrlf(imgUrl string) (*resty.Response, error) {
 	client := resty.New()
+	client.SetRetryCount(2).SetRetryWaitTime(500 * time.Millisecond).
+		SetRetryMaxWaitTime(1 * time.Second).
+		SetRetryAfter(func(client *resty.Client, resp *resty.Response) (time.Duration, error) {
+			return 0, errors.New("quota exceeded")
+		})
+	client.OnError(func(r *resty.Request, err error) {
+		if v, ok := err.(*resty.ResponseError); ok {
+			fmt.Printf("OnError: %v\n", v)
+		} else {
+			fmt.Println("从url获取图片出错")
+		}
+
+	})
 	resp, err := client.R().Get(imgUrl)
 	if err != nil {
 		return nil, err
