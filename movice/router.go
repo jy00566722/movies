@@ -12,6 +12,7 @@ import (
 
 	"github.com/duke-git/lancet/random"
 	"github.com/gin-gonic/gin"
+	"github.com/jy00566722/movies/global"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -112,6 +113,7 @@ func SaveImageFormDbToBz() {
 			}
 		}
 		fmt.Println("本轮搬运完成")
+		global.GLM_BZCRONSTATUS = false
 	}
 }
 
