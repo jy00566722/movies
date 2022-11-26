@@ -39,8 +39,6 @@ func GlobalInit() {
 	newSession, err := session.NewSession(s3Config)
 	if err != nil {
 		fmt.Println("Err:", err)
-	} else {
-		fmt.Printf("\"哈\": %v\n", "哈")
 	}
 	GLM_s3Client = s3.New(newSession)
 }
