@@ -87,7 +87,7 @@ func SaveImageFormDbToBz() {
 	} else {
 		for i, v := range moviesInfo {
 			time.Sleep(time.Microsecond * 500)
-			if v.VodPic != "" && v.BzPic == "" {
+			if v.VodPic != "" && v.BzPic == "BAD" {
 				fmt.Printf("要搬运的信息:VodPic: %v,BzPic:%v\n", v.VodPic, v.BzPic)
 				loadFileinfo, err := GetImageFromUrl(v.VodPic)
 				if err != nil {
