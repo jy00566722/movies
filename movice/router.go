@@ -67,7 +67,7 @@ func Movice1080CtronGetDate() {
 	var moviceReq = make(map[string]string)
 	moviceReq["ac"] = "detail"
 	moviceReq["pg"] = "1"
-	moviceReq["h"] = ""
+	moviceReq["h"] = "72"
 	result := &Movice1080Resp{}
 	_, err := client.R().SetQueryParams(moviceReq).SetResult(result).ForceContentType("application/json").Get(url)
 	if err != nil {
