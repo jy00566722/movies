@@ -7,7 +7,7 @@ import (
 	"github.com/qiniu/qmgo/field"
 )
 
-// Movie 结构体
+// Movie 结构体  百度资源
 type Movice struct {
 	// field.DefaultField `bson:",inline"`
 	CreateTimeAt     time.Time `bson:"createTimeAt"`
@@ -124,47 +124,61 @@ type LoadFileinfo struct {
 	Size     int64               `json:"size,omitempty"`
 }
 
-// type Movice1080 struct{
-//     VodTime "vod_time": "2022-03-22 19:40:37",
-//     "vod_id": "392",
-//     "vod_name": "十里寒路赢天下",
-//     "vod_enname": "shilihanluyingtianxia",
-//     "vod_sub": "",
-//     "vod_letter": "S",
-//     "vod_color": "",
-//     "vod_tag": "",
-//     "vod_class": "",
-//     "type_id": "10",
-//     "type_name": "剧情片",
-//     "vod_pic": "https://pic1.zykpic.com/upload/vod/2022-03-22/202203221647938427.png",
-//     "vod_lang": "国语",
-//     "vod_area": "大陆",
-//     "vod_year": "2018",
-//     "vod_remarks": "HD国语版",
-//     "vod_actor": "秦晓飞,庄晓彤,郁仲",
-//     "vod_director": "郁富豪",
-//     "vod_serial": "0",
-//     "vod_lock": "0",
-//     "vod_level": "0",
-//     "vod_hits": "20",
-//     "vod_hits_day": "1",
-//     "vod_hits_week": "1",
-//     "vod_hits_month": "6",
-//     "vod_duration": "0",
-//     "vod_up": "0",
-//     "vod_down": "0",
-//     "vod_score": "5.8",
-//     "vod_score_all": "0",
-//     "vod_score_num": "0",
-//     "vod_points_play": "0",
-//     "vod_points_down": "0",
-//     "vod_content": "　　建文年间，不动峰的长老，周三绝指使周从筠偷窃武林至宝擎天印，嫁祸给“邪教”九千阁。九千阁宗主隋元宁是个草莽侠客，他掌管的九千阁千术卓绝，推崇蛊毒，行事独来独往。<br />　　届时江湖上有四个行事诡异、剑走偏锋的“妖女”，其中三位正是九千阁的琴女、毒女和蛊女，最后一位行踪神秘，人称“罗刹仙子”周从筠。在追查擎天印被盗案期间，隋元宁屡次与周从筠暗斗明争，结果两人棋逢对手，竟互生好感。<br />　　周从筠在生父和隋元宁相斗时从中阻挠，她救了隋元宁，却被周三绝误杀，香消玉殒。周三绝苦心经营毁于一旦，身败名裂，独女身亡，在多重打击下失心发疯。周三绝从此在江湖销声匿迹，武林至宝擎天印与共工剑回归原位，九千阁也终于洗脱冤屈。",
-//     "vod_play_from": "1080zyk",
-//     "vod_play_note": "",
-//     "vod_play_server": "no",
-//     "vod_play_url": "HD国语版$https://cdn1.vipzyk-video.com/20220322/OTtIXd0b/index.m3u8",
-//     "vod_down_from": "0",
-//     "vod_down_note": "0",
-//     "vod_down_server": "0",
-//     "vod_down_url": "0"
-// }
+//1080资源站的结构体
+type Movice1080 struct {
+	CreateTimeAt  time.Time `bson:"createTimeAt,omitempty"`
+	UpdateTimeAt  time.Time `bson:"updateTimeAt,omitempty"`
+	VodTime       string    `json:"vod_time" form:"vod_time" bson:"vod_time"`
+	VodId         string    `json:"vod_id" form:"vod_id" bson:"vod_id"`
+	VodName       string    `json:"vod_name" form:"vod_name" bson:"vod_name"`
+	VodEnname     string    `json:"vod_enname" form:"vod_enname" bson:"vod_enname"`
+	VodSub        string    `json:"vod_sub" form:"vod_sub" bson:"vod_sub"`
+	VodLetter     string    `json:"vod_letter" form:"vod_letter" bson:"vod_letter"`
+	VodColor      string    `json:"vod_color" form:"vod_color" bson:"vod_color"`
+	VodTag        string    `json:"vod_tag" form:"vod_tag" bson:"vod_tag"`
+	VodClass      string    `json:"vod_class" form:"vod_class" bson:"vod_class"`
+	TypeId        string    `json:"type_id" form:"type_id" bson:"type_id"`
+	TypeName      string    `json:"type_name" form:"type_name" bson:"type_name"`
+	VodPic        string    `json:"vod_pic" form:"vod_pic" bson:"vod_pic"`
+	VodLang       string    `json:"vod_lang" form:"vod_lang" bson:"vod_lang"`
+	VodArea       string    `json:"vod_area" form:"vod_area" bson:"vod_area"`
+	VodYear       string    `json:"vod_year" form:"vod_year" bson:"vod_year"`
+	VodRemarks    string    `json:"vod_remarks" form:"vod_remarks" bson:"vod_remarks"`
+	VodActor      string    `json:"vod_actor" form:"vod_actor" bson:"vod_actor"`
+	VodDirector   string    `json:"vod_director" form:"vod_director" bson:"vod_director"`
+	VodSerial     string    `json:"vod_serial" form:"vod_serial" bson:"vod_serial"`
+	VodLock       string    `json:"vod_lock" form:"vod_lock" bson:"vod_lock"`
+	VodLevel      string    `json:"vod_level" form:"vod_level" bson:"vod_level"`
+	VodHits       string    `json:"vod_hits" form:"vod_hits" bson:"vod_hits"`
+	VodHitsDay    string    `json:"vod_hits_day" form:"vod_hits_day" bson:"vod_hits_day"`
+	VodHitsWeek   string    `json:"vod_hits_week" form:"vod_hits_week" bson:"vod_hits_week"`
+	VodHitsMonth  string    `json:"vod_hits_month" form:"vod_hits_month" bson:"vod_hits_month"`
+	VodDuration   string    `json:"vod_duration" form:"vod_duration" bson:"vod_duration"`
+	VodUp         string    `json:"vod_up" form:"vod_up" bson:"vod_up"`
+	VodDown       string    `json:"vod_down" form:"vod_down" bson:"vod_down"`
+	VodScore      string    `json:"vod_score" form:"vod_score" bson:"vod_score"`
+	VodScoreAll   string    `json:"vod_score_all" form:"vod_score_all" bson:"vod_score_all"`
+	VodScoreNum   string    `json:"vod_score_num" form:"vod_score_num" bson:"vod_score_num"`
+	VodPointsPlay string    `json:"vod_points_play" form:"vod_points_play" bson:"vod_points_play"`
+	VodPointsDown string    `json:"vod_points_down" form:"vod_points_down" bson:"vod_points_down"`
+	VodContent    string    `json:"vod_content" form:"vod_content" bson:"vod_content"`
+	VodPlayFrom   string    `json:"vod_play_from" form:"vod_play_from" bson:"vod_play_from"`
+	VodPlayNote   string    `json:"vod_play_note" form:"vod_play_note" bson:"vod_play_note"`
+	VodPlayServer string    `json:"vod_play_server" form:"vod_play_server" bson:"vod_play_server"`
+	VodPlayUrl    string    `json:"vod_play_url" form:"vod_play_url" bson:"vod_play_url"`
+	VodDownFrom   string    `json:"vod_down_from" form:"vod_down_from" bson:"vod_down_from"`
+	VodDownNote   string    `json:"vod_down_note" form:"vod_down_note" bson:"vod_down_note"`
+	VodDownServer string    `json:"vod_down_server" form:"vod_down_server" bson:"vod_down_server"`
+	VodDownUrl    string    `json:"vod_down_url" form:"vod_down_url" bson:"vod_down_url"`
+	BzPic         string    `json:"bz_pic,omitempty" form:"bz_pic" bson:"bz_pic,omitempty"`
+}
+
+type Movice1080Resp struct {
+	Code      int          `json:"code" form:"code" bson:"code"`
+	Limit     int          `json:"limit" form:"limit" bson:"limit"`
+	List      []Movice1080 `json:"list" form:"list" bson:"list"`
+	Msg       string       `json:"msg" form:"msg" bson:"msg"`
+	Page      int          `json:"page" form:"page" bson:"page"`
+	Pagecount int          `json:"pagecount" form:"pagecount" bson:"pagecount"`
+	Total     int          `json:"total" form:"total" bson:"total"`
+}

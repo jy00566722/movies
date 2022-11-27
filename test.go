@@ -7,6 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/jy00566722/movies/global"
+	"github.com/jy00566722/movies/movice"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -119,4 +120,18 @@ func GetObjectTest() {
 		fmt.Printf("o: %v-%v\n", len(o.DeleteMarkers), len(o.Versions))
 	}
 
+}
+
+func FindTest() {
+	var moviceInfo movice.Movice1080
+	err := global.QmgoCollMovice1080.Find(context.Background(), bson.M{"vod_id": "420"}).One(&moviceInfo)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+	} else {
+		fmt.Printf("moviceInfo: %+v\n", moviceInfo)
+		fmt.Printf("moviceInfo.BzPic: %v-%T\n", moviceInfo.BzPic, moviceInfo.BzPic)
+		if moviceInfo.BzPic == "" {
+			fmt.Println("BzPic为空字符串")
+		}
+	}
 }

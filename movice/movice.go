@@ -13,10 +13,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/go-resty/resty/v2"
+	"github.com/jy00566722/movies/global"
 	"github.com/qiniu/qmgo"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //获取电影数据
@@ -24,13 +22,14 @@ type MoviceService struct {
 }
 
 var client = resty.New()
-var ctx = context.Background()
-var cli *qmgo.QmgoClient
 
-func init() {
-	cli, _ = qmgo.Open(ctx, &qmgo.Config{Uri: "mongodb://t.deey.top:57890", Database: "movicego", Coll: "movice"})
+// var ctx = context.Background()
+// var cli *qmgo.QmgoClient
 
-}
+// func init() {
+// 	cli, _ = qmgo.Open(ctx, &qmgo.Config{Uri: "mongodb://t.deey.top:57890", Database: "movicego", Coll: "movice"})
+
+// }
 
 //https://api.apibdzy.com/api.php/provide/vod/?ac=detail&pg=2&h=40
 var url = "https://api.apibdzy.com/api.php/provide/vod/"
@@ -46,12 +45,12 @@ func (moviceService *MoviceService) GetMovice(pg string, h string) {
 		fmt.Printf("\"请求出现错误\": %v\n", "请求出现错误")
 		fmt.Printf("err: %v\n", err)
 	} else {
-		b := cli.Bulk()
+		b := global.QmgoCollMovice.Bulk()
 		for _, v := range result.List {
-			v.CreateTimeAt = time.Now()
-			b.UpsertOne(qmgo.M{"vod_id": v.VodId}, qmgo.M{"$set": v})
+			v.UpdateTimeAt = time.Now().Local()
+			b.UpsertOne(qmgo.M{"vod_id": v.VodId}, qmgo.M{"$set": v, "$setOnInsert": qmgo.M{"createTimeAt": v.UpdateTimeAt}})
 		}
-		r, err := b.Run(ctx)
+		r, err := b.Run(context.Background())
 		if err != nil {
 			fmt.Printf("插入mongodb出错: %v\n", err)
 		} else {
@@ -60,30 +59,29 @@ func (moviceService *MoviceService) GetMovice(pg string, h string) {
 	}
 }
 
-//使用原生go-mongodb操作
-func (moviceService *MoviceService) GetMoviceNew(pg string, h string) {
+var url1080 = "https://api.1080zyku.com/inc/apijson.php"
+
+func (moviceService *MoviceService) GetMovice1080(pg string, h string) {
 	var moviceReq = make(map[string]string)
 	moviceReq["ac"] = "detail"
 	moviceReq["pg"] = pg
 	moviceReq["h"] = h
-	result := &MoviceResp{}
-	_, err := client.R().SetQueryParams(moviceReq).SetResult(result).ForceContentType("application/json").Get(url)
+	result := &Movice1080Resp{}
+	_, err := client.R().SetQueryParams(moviceReq).SetResult(result).ForceContentType("application/json").Get(url1080)
 	if err != nil {
 		fmt.Printf("\"请求出现错误\": %v\n", "请求出现错误")
 		fmt.Printf("err: %v\n", err)
 	} else {
-		models := []mongo.WriteModel{}
+		c := global.QmgoCollMovice1080.Bulk()
 		for _, v := range result.List {
-			v.CreateTimeAt = time.Now()
-			update := bson.M{"$set": v}
-			models = append(models, mongo.NewUpdateOneModel().SetFilter(bson.D{{Key: "_id", Value: v.VodId}}).SetUpdate(update).SetUpsert(true))
+			v.UpdateTimeAt = time.Now().Local()
+			c.UpsertOne(qmgo.M{"vod_id": v.VodId}, qmgo.M{"$set": v, "$setOnInsert": qmgo.M{"createTimeAt": v.UpdateTimeAt}})
 		}
-		opts := options.BulkWrite().SetOrdered(true)
-		results, err := cliM.BulkWrite(context.TODO(), models, opts)
+		r, err := c.Run(context.Background())
 		if err != nil {
 			fmt.Printf("插入mongodb出错: %v\n", err)
 		} else {
-			fmt.Printf("\"捶入mongodb成功\": %+v\n", results)
+			fmt.Printf("\"捶入mongodb成功\": %+v\n", r)
 		}
 	}
 }
@@ -141,3 +139,31 @@ func (moviceService *MoviceService) UploadFile(fileName *string, contentType *st
 
 	return file, nil
 }
+
+// //使用原生go-mongodb操作
+// func (moviceService *MoviceService) GetMoviceNew(pg string, h string) {
+// 	var moviceReq = make(map[string]string)
+// 	moviceReq["ac"] = "detail"
+// 	moviceReq["pg"] = pg
+// 	moviceReq["h"] = h
+// 	result := &MoviceResp{}
+// 	_, err := client.R().SetQueryParams(moviceReq).SetResult(result).ForceContentType("application/json").Get(url)
+// 	if err != nil {
+// 		fmt.Printf("\"请求出现错误\": %v\n", "请求出现错误")
+// 		fmt.Printf("err: %v\n", err)
+// 	} else {
+// 		models := []mongo.WriteModel{}
+// 		for _, v := range result.List {
+// 			v.CreateTimeAt = time.Now()
+// 			update := bson.M{"$set": v}
+// 			models = append(models, mongo.NewUpdateOneModel().SetFilter(bson.D{{Key: "_id", Value: v.VodId}}).SetUpdate(update).SetUpsert(true))
+// 		}
+// 		opts := options.BulkWrite().SetOrdered(true)
+// 		results, err := cliM.BulkWrite(context.TODO(), models, opts)
+// 		if err != nil {
+// 			fmt.Printf("插入mongodb出错: %v\n", err)
+// 		} else {
+// 			fmt.Printf("\"捶入mongodb成功\": %+v\n", results)
+// 		}
+// 	}
+// }
