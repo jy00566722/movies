@@ -10,8 +10,8 @@ import (
 // Movie 结构体  百度资源
 type Movice struct {
 	// field.DefaultField `bson:",inline"`
-	CreateTimeAt     time.Time `bson:"createTimeAt"`
-	UpdateTimeAt     time.Time `bson:"updateTimeAt"`
+	CreateTimeAt     time.Time `bson:"createTimeAt,omitempty"`
+	UpdateTimeAt     time.Time `bson:"updateTimeAt,omitempty"`
 	GroupId          int       `json:"group_id" form:"group_id" bson:"group_id"`
 	TypeId           int       `json:"type_id" form:"type_id" bson:"type_id"`
 	TypeId1          int       `json:"type_id_1" form:"type_id_1" bson:"type_id_1"`
@@ -181,4 +181,45 @@ type Movice1080Resp struct {
 	Page      int          `json:"page" form:"page" bson:"page"`
 	Pagecount int          `json:"pagecount" form:"pagecount" bson:"pagecount"`
 	Total     int          `json:"total" form:"total" bson:"total"`
+}
+
+//所有资源集合后的结构体，只选有用的字段
+// type MoviceAll struct {
+// 	CreateTimeAt time.Time `bson:"createTimeAt,omitempty"`
+// 	UpdateTimeAt time.Time `bson:"updateTimeAt,omitempty"`
+// 	VodId        string    `json:"vod_id" form:"vod_id" bson:"vod_id"`
+// 	VodIds       struct {
+// 		Bdzy   string `json:"bdzy,omitempty" form:"bdzy" bson:"bdzy,omitempty"`
+// 		Gq1080 string `json:"gq1080,omitempty" form:"gq1080" bson:"gq1080,omitempty"`
+// 	} `json:"vod_ids" form:"vod_ids" bson:"vod_ids"`
+// 	VodName  string `json:"vod_name" form:"vod_name" bson:"vod_name"`
+// 	TypeId   string `json:"type_id" form:"type_id" bson:"type_id"`
+// 	TypeName struct {
+// 		Bdzy   string `json:"bdzy,omitempty" form:"bdzy" bson:"bdzy,omitempty"`
+// 		Qg1080 string `json:"gq1080,omitempty" form:"gq1080" bson:"gq1080,omitempty"`
+// 	} `json:"type_name" form:"type_name" bson:"type_name"`
+// 	VodPic struct {
+// 		Bdzy   string `json:"bdzy,omitempty" form:"bdzy" bson:"bdzy,omitempty"`
+// 		Qg1080 string `json:"gq1080,omitempty" form:"gq1080" bson:"gq1080,omitempty"`
+// 	} `json:"vod_pic" form:"vod_pic" bson:"vod_pic"`
+// 	VodArea     string `json:"vod_area" form:"vod_area" bson:"vod_area"`
+// 	VodYear     string `json:"vod_year" form:"vod_year" bson:"vod_year"`
+// 	VodRemarks  string `json:"vod_remarks" form:"vod_remarks" bson:"vod_remarks"`
+// 	VodActor    string `json:"vod_actor" form:"vod_actor" bson:"vod_actor"`
+// 	VodDirector string `json:"vod_director" form:"vod_director" bson:"vod_director"`
+// 	VodContent  string `json:"vod_content" form:"vod_content" bson:"vod_content"`
+// 	VodPlayUrl  struct {
+// 		Bdzy   string `json:"bdzy,omitempty" form:"bdzy" bson:"bdzy,omitempty"`
+// 		Gq1080 string `json:"gq1080,omitempty" form:"gq1080" bson:"gq1080,omitempty"`
+// 	} `json:"vod_play_url" form:"vod_play_url" bson:"vod_play_url"`
+// 	BzPic struct {
+// 		Bdzy   string `json:"bdzy,omitempty" form:"bdzy" bson:"bdzy,omitempty"`
+// 		Gq1080 string `json:"gq1080,omitempty" form:"gq1080" bson:"gq1080,omitempty"`
+// 	} `json:"bz_pic,omitempty" form:"bz_pic" bson:"bz_pic,omitempty"`
+// }
+
+type MoviceMerge struct {
+	VodName     string `json:"vod_name" form:"vod_name" bson:"vod_name"`
+	VodIdBdzy   int    `json:"vod_id_bzdy" form:"vod_id_bzdy" bson:"vod_id_bzdy"`
+	VodIdQg1080 string `json:"vod_id_gq1080" form:"vod_id_gq1080" bson:"vod_id_gq1080"`
 }

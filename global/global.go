@@ -21,10 +21,11 @@ var (
 	GLM_s3Client         *s3.S3
 	GLM_bucket           *string
 
-	QmgoClient         *qmgo.Client
-	QmgoDatabase       *qmgo.Database
-	QmgoCollMovice     *qmgo.Collection
-	QmgoCollMovice1080 *qmgo.Collection
+	QmgoClient          *qmgo.Client
+	QmgoDatabase        *qmgo.Database
+	QmgoCollMovice      *qmgo.Collection
+	QmgoCollMovice1080  *qmgo.Collection
+	QmgoCollMoviceMerge *qmgo.Collection
 )
 
 const uri = "mongodb://t.deey.top:57890/?maxPoolSize=20&w=majority"
@@ -58,4 +59,6 @@ func GlobalInit() {
 	QmgoDatabase := QmgoClient.Database("movicego")
 	QmgoCollMovice = QmgoDatabase.Collection("movice")
 	QmgoCollMovice1080 = QmgoDatabase.Collection("movice1080")
+	QmgoCollMoviceMerge = QmgoDatabase.Collection("movicemerge")
+
 }

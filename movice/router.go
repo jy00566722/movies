@@ -77,7 +77,7 @@ func Movice1080CtronGetDate() {
 		// fmt.Printf("请求回来的电影数据如下: %v\n", result)
 		fmt.Printf("result.Total: %v\n", result.Total)
 		fmt.Printf("result.Pagecount: %v\n", result.Pagecount)
-		for i := 220; i <= result.Pagecount; i++ {
+		for i := 1; i <= result.Pagecount; i++ {
 			fmt.Printf("\"当前请求第几页\": %v\n", i)
 			moviceService.GetMovice1080(strconv.Itoa(i), "")
 			time.Sleep(150 * time.Millisecond)
@@ -246,18 +246,8 @@ func GetImageFromUrl(url string, pre string) (loadFileinfo LoadFileinfo, err err
 	return loadFileinfo, nil
 }
 
-// func GetDataTest() {
-// 	fmt.Println("测试.")
-// 	filter := bson.D{{Key: "vod_name", Value: bson.D{{Key: "$all", Value: bson.A{"大使的厨房"}}}}}
-// 	cursor, err := cliM.Find(context.TODO(), filter)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	var results []Movice
-// 	if err = cursor.All(context.TODO(), &results); err != nil {
-// 		panic(err)
-// 	}
-// 	for _, result := range results {
-// 		fmt.Println(result)
-// 	}
-// }
+//合并两个资源的内容
+func MergeMovies() {
+	// a := strsim.Compare("湖南省常德市澧县", "湖南省常德市澧", strsim.DiceCoefficient()) //strsim.Simhash()
+
+}
